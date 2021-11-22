@@ -1,5 +1,5 @@
 let express = require('express');
-let cors = require('cors');
+let cors = require('cors'); //https://www.npmjs.com/package/cors
 let sqlite3 = require('sqlite3');
 let fs = require('fs');
 let path = require('path');
