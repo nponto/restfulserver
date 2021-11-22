@@ -1,0 +1,27 @@
+{
+    "name": "RESTful Server",
+    "version": "0.0.0",
+    "description": "Dynamic server using REST requests",
+    "author": {
+        "name": "",
+        "email": ""    
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": ""
+        },
+        {
+            "name": "",
+            "email": ""
+        }
+    ],
+    "main": "server.js",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "dependencies": {
+        
+    }
+}
