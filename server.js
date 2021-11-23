@@ -95,8 +95,8 @@ app.put('api/new-incident/:case_number/:date/:time/:code/:incident/:police_grid/
         } else {
             res.status(200).type('json').send(rows);
         }
-    })
-})
+    });
+});
 
 app.delete('api/remove-incident/:case_number', (req, res) => {
     db.all('DELETE FROM Incident WHERE case_number = ?', [req.params.case_number], (err, rows) => {
@@ -106,8 +106,8 @@ app.delete('api/remove-incident/:case_number', (req, res) => {
         } else {
             res.status(200).type('json').send(rows);
         }
-    })
-})
+    });
+});
 
 /*
 app.post('/api/mfr', (req, res) => {
