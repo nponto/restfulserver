@@ -4,7 +4,7 @@
     "description": "Dynamic server using REST requests",
     "author": {
         "name": "",
-        "email": ""    
+        "email": ""
     },
     "contributors": [
         {
@@ -22,6 +22,8 @@
         "url": ""
     },
     "dependencies": {
-        
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "sqlite3": "^5.0.2"
     }
 }
