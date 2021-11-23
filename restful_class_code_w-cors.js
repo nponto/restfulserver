@@ -43,8 +43,10 @@ app.get('/:mfr', (req, res) => {
 
 //REST API
 app.get('/api/cereal/:mfr', (req, res) => {
-    db.all('SELECT * FROM Manufacturers WHERE UPPER(name) = ?', [req.params.mfr.toUpperCase()[0]], (err, rows) => {
-        db.all('SELECT name from Cereals WHERE mfr = ?', [row.id], (err, rows) => {
+    db.get('SELECT * FROM Manufacturers WHERE UPPER(name) = ?', [req.params.mfr.toUpperCase()], (err, row) => {
+        console.log(row);
+        db.all('SELECT * from Cereals WHERE mfr = ?', [row.id], (err, rows) => {
+            console.log(rows);
             res.status(200).type('json').send(rows);
         });
     });
