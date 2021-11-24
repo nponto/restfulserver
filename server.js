@@ -78,7 +78,7 @@ app.get('/api/incidents', (req, res) => {
     });
 });
 
-app.put('api/new-incident/:case_number/:date/:time/:code/:incident/:police_grid/:neighborhood_number/:block', (req, res) => {
+app.put('api/new-incident', (req, res) => {
     let case_number = req.params.case_number;
     let date = req.params.date;
     let time = req.params.time;
@@ -98,7 +98,7 @@ app.put('api/new-incident/:case_number/:date/:time/:code/:incident/:police_grid/
     });
 });
 
-app.delete('/api/remove-incident/:case_number', (req, res) => {
+app.delete('/api/remove-incident', (req, res) => {
     db.all('DELETE FROM Incident WHERE case_number = ?', [req.params.case_number], (err, rows) => {
         console.log(rows);
         if (err) {
