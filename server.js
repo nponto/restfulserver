@@ -78,7 +78,7 @@ app.get('/api/incidents', (req, res) => {
     });
 });
 
-app.put('api/new-incident/:case_number/:date/:time/:code/:incident/:police_grid/:neighborhood_number/:block', (req, res) => {
+app.put('/api/new-incident/:case_number/:date/:time/:code/:incident/:police_grid/:neighborhood_number/:block', (req, res) => {
     let case_number = req.params.case_number;
     let date = req.params.date;
     let time = req.params.time;
