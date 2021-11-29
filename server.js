@@ -78,27 +78,26 @@ app.get('/api/incidents', (req, res) => {
     });
 });
 
-app.put('api/new-incident', (req, res) => {
-    let case_number = req.params.case_number;
-    let date = req.params.date;
-    let time = req.params.time;
-    let date_time = date + time;
-    let code = req.params.code;
-    let incident = req.params.incident;
-    let police_grid = req.params.police_grid;
-    let neighborhood_number = req.params.neighborhood_number;
-    let block = req.params.block;
-    db.all('INSERT INTO Incidents (case_number, date_time, code, incident, police_grid, neighborhood_number, block) VALUES (' + case_number + ', ' + date_time + ', ' + code + ', ' + incident + ', ' + police_grid + ', ' + neighborhood_number + ', ' + block + ')', (err, rows) => {
-        console.log(rows);
-        if (err) {
-            res.status(500).send("Error when trying to insert");
+app.put('/api/new-incident', (req,res) => {
+    console.log(req.body);
+    db.get('SELECT * FROM Incidents WHERE case_number = ?', [req.body.case_number], (err,row) => {
+        console.log(row);
+        console.log(err);
+        if(err || row !== undefined) {
+            res.status(500).send("ERROR: could not insert new incident! (case number conflict)");
         } else {
-            res.status(200).type('json').send(rows);
+            db.run("INSERT INTO Incidents (case_number,date_time,code,incident,police_grid,neighborhood_number,block) VALUES (?,?,?,?,?,?,?)", [req.body.case_number,req.body.date_time,req.body.code,req.body.incident,req.body.police_grid,req.body.neighborhood_number,req.body.block], (err) => {
+                if(err) {
+                    res.status(404).send("ERROR: parameters are not correct! (OR I screwed something up)");
+                } else {
+                    console.log("SUCCESSFULLY added new entry!");
+                }
+            })
         }
     });
 });
 
-app.delete('/api/remove-incident', (req, res) => {
+app.delete('/api/remove-incident/:case_number', (req, res) => {
     db.all('DELETE FROM Incident WHERE case_number = ?', [req.params.case_number], (err, rows) => {
         console.log(rows);
         if (err) {
