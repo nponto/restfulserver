@@ -3,13 +3,8 @@
     "version": "0.0.0",
     "description": "Dynamic server using REST requests",
     "author": {
-<<<<<<< HEAD
-        "name": "",
-        "email": ""
-=======
         "name": "Noah Ponto",
         "email": "pont7171@stthomas.edu"
->>>>>>> 37d43abc06f4d0099726e4e430390b4423d6a3a2
     },
     "contributors": [
         {
@@ -29,11 +24,8 @@
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.17.1",
-<<<<<<< HEAD
-=======
         "fs": "^0.0.1-security",
         "path": "^0.12.7",
->>>>>>> 37d43abc06f4d0099726e4e430390b4423d6a3a2
         "sqlite3": "^5.0.2"
     }
 }

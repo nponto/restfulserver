@@ -80,10 +80,10 @@ app.get('/api/incidents', (req, res) => {
 
 app.put('/api/new-incident', (req,res) => {
     console.log(req.body);
-    db.get('SELECT * FROM Incidents WHERE case_number = ?', [req.body.case_number], (err,row) => {
-        console.log(row);
+    db.all('SELECT * FROM Incidents WHERE case_number', [req.body.case_number], (err,rows) => {
+        console.log(rows);
         console.log(err);
-        if(err || row !== undefined) {
+        if(err || rows !== undefined) {
             res.status(500).send("ERROR: could not insert new incident! (case number conflict)");
         } else {
             db.run("INSERT INTO Incidents (case_number,date_time,code,incident,police_grid,neighborhood_number,block) VALUES (?,?,?,?,?,?,?)", [req.body.case_number,req.body.date_time,req.body.code,req.body.incident,req.body.police_grid,req.body.neighborhood_number,req.body.block], (err) => {
@@ -97,15 +97,26 @@ app.put('/api/new-incident', (req,res) => {
     });
 });
 
-app.delete('/api/remove-incident/:case_number', (req, res) => {
-    db.all('DELETE FROM Incident WHERE case_number = ?', [req.params.case_number], (err, rows) => {
-        console.log(rows);
-        if (err) {
-            res.status(500).send("Error when trying to delete");
+app.delete('/api/remove-incident', (req, res) => {
+    console.log(req.body);
+    //console.log(req.body.case_number);
+    db.all('SELECT * FROM Incidents WHERE case_number =?', [req.body.case_number], (err, row) => {
+        if (err || row === undefined)   {
+            res.status(500).send("Case does not exist. Unable to delete");
         } else {
-            res.status(200).type('json').send(rows);
+            db.all('DELETE FROM Incidents WHERE case_number = ?', [req.body.case_number], (err,rows) => {
+                console.log(req.body.case_number);
+                console.log(rows);
+                //console.log(err);
+                if (err) {
+                    res.status(500).send("Error when trying to delete incident");
+                } else {
+                    res.status(200).type('json').send(rows);
+                }
+            });
         }
     });
+    
 });
 
 /*
