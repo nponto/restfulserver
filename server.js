@@ -58,24 +58,77 @@ app.get('/api/cereal/:mfr', (req, res) => {
 */
 
 app.get('/api/codes', (req, res) => {
-    db.all('SELECT * FROM Codes', (err, rows) => {
-        console.log(rows);
-        res.status(200).type('json').send(rows);
-    });
+    
+    if (Object.keys(req.query).length === 0 ) {
+        db.all('SELECT * FROM Codes', (err, rows) => {
+            //console.log(rows);
+            res.status(200).type('json').send(rows);
+        });
+    } else {
+        console.log(req.query.code);
+        let codes = req.query.code.split(',');
+        console.log(codes);
+        var sql = "SELECT * FROM Codes WHERE code = " + codes[0];
+        function extraSQL(arr) { // function to concatenate OR to the sql query syntax
+            var string = '';
+            for (var i = 1; i < arr.length; i++) {
+                string += " OR code = " + arr[i];
+            }
+            return string;
+        }
+        sql += extraSQL(codes);
+        console.log(sql);
+        db.all(sql, (err, rows) => {
+            if (err || rows === undefined) {
+                res.status(500).send("ERROR: Could not find codes");
+            } else {
+                console.log(rows);
+                res.status(200).type('json').send(rows);
+            }
+        });
+    }
 });
 
 app.get('/api/neighborhoods', (req, res) => {
-    db.all('SELECT * FROM Neighborhoods', (err, rows) => {
-        console.log(rows);
-        res.status(200).type('json').send(rows);
-    });
+    
+    if (Object.keys(req.query).length === 0) {
+        db.all('SELECT * FROM Neighborhoods', (err, rows) => {
+            res.status(200).type('json').send(rows);
+        });
+    } else {
+        console.log(req.query.id);
+        let ids = req.query.id.split(',');
+        console.log(ids);
+        var sql = "SELECT * FROM Neighborhoods WHERE neighborhood_number = " + ids[0];
+        function extraSQL(arr) { // function to concatenate OR to the sql query syntax
+            var string = '';
+            for (var i = 1; i < arr.length; i++) {
+                string += " OR neighborhood_number = " + arr[i];
+            }
+            return string;
+        }
+        sql += extraSQL(ids);
+        db.all(sql, (err, rows) => {
+            if (err || rows === undefined) {
+                res.status(500).send("ERROR: Could not find neighborhoods");
+            } else {
+                console.log(rows);
+                res.status(200).type('json').send(rows);
+            }
+        });
+    }
 });
 
 app.get('/api/incidents', (req, res) => {
-    db.all('SELECT * FROM Incidents ORDER BY date_time', (err, rows) => {
-        console.log(rows);
-        res.status(200).type('json').send(rows);
-    });
+    if (Object.keys(req.query).length === 0) {
+        db.all('SELECT * FROM Incidents ORDER BY date_time', (err, rows) => {
+            console.log(rows);
+            res.status(200).type('json').send(rows);
+        });
+    } else {
+        
+    }
+    
 });
 
 app.put('/api/new-incident', (req,res) => {
