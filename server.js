@@ -3,7 +3,9 @@ let cors = require('cors'); //https://www.npmjs.com/package/cors
 let sqlite3 = require('sqlite3');
 let fs = require('fs');
 let path = require('path');
+let url = require('url');
 const bodyParser = require('body-parser');
+const { equal } = require('assert');
 
 let port = 8000;
 let public_dir = path.join(__dirname, 'public');
@@ -126,6 +128,91 @@ app.get('/api/incidents', (req, res) => {
             res.status(200).type('json').send(rows);
         });
     } else {
+
+        var sql = 'SELECT * FROM Incidents WHERE ';
+        let start = req.query.start_date;
+        let end = req.query.end_date;
+        let code = req.query.code;
+        let neighborhoods = req.query.neighborhood;
+        let police_grids = req.query.grid;
+        let limit = req.query.limit;
+
+        let search = url.parse(req.url, true).search;
+        search = search.replace('?', '');
+        console.log(search);
+        console.log(req.query);
+
+        if (search.includes('start_date') && !(search.includes('end_date'))) {
+            sql += 'date_time >= ' + "'" + start + "'";
+        } else if (search.includes('end_date') && !(search.includes('start_date'))) {
+            sql += 'date_time <= ' + "'" + end + "'";
+        } else if ((search.includes('start_date')) && (search.includes('end_date'))) {
+            sql += '(date_time BETWEEN ' + "'" + start + "'" + ' AND ' + "'" + end + "')";
+        } else {
+            // edit sql so that is it flows correctly into the next query term
+        }
+
+        
+
+        if (search.includes('code')) {
+            let codes = code.split(',');
+            sql += ' AND (code = ' + codes[0];
+
+            function extraSQL(arr) { // function to concatenate OR to the sql query syntax
+                var string = '';
+                for (var i = 1; i < arr.length; i++) {
+                    string += " OR code = " + arr[i];
+                }
+                return string;
+            }
+            sql += extraSQL(codes) + ')';
+        }
+
+        if (search.includes('grid')) {
+            let grids = police_grids.split(',');
+            sql += " AND (police_grid = " + grids[0];
+
+            function extraSQL(arr) { // function to concatenate OR to the sql query syntax
+                var string = '';
+                for (var i = 1; i < arr.length; i++) {
+                    string += " OR police_grid = " + arr[i];
+                }
+                return string;
+            }
+            sql += extraSQL(grids) + ')';
+        }
+
+        if (search.includes('neighborhood')) {
+            let ids = neighborhoods.split(',');
+            sql += " AND (neighborhood_number = " + ids[0];
+
+            function extraSQL(arr) { // function to concatenate OR to the sql query syntax
+                var string = '';
+                for (var i = 1; i < arr.length; i++) {
+                    string += " OR neighborhood_number = " + arr[i];
+                }
+                return string;
+            }
+            sql += extraSQL(ids) + ')';
+        }
+
+        if (search.includes('limit')) {
+            sql += ' LIMIT ' + limit;
+        } else {
+            sql += ' LIMIT 100';
+        }
+
+        console.log(sql);
+
+        db.all(sql, (err, rows) => {
+            if (err || rows === undefined) {
+                res.status(500).send("ERROR: Could not find incidents");
+            } else {
+                console.log('rows is: ' + rows);
+                res.status(200).type('json').send(rows);
+            }
+        });
+
         
     }
     
