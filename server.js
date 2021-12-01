@@ -164,7 +164,7 @@ app.get('/api/incidents', (req, res) => {
             sql += extraSQL(ids) + ')';
         }
 
-        sql += ' ORDER BY date_time ';
+        sql += ' ORDER BY date_time DESC ';
 
         if (search.includes('limit')) {
             sql += 'LIMIT ' + limit;
