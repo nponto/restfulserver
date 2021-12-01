@@ -24,40 +24,6 @@ let db = new sqlite3.Database(db_filename, sqlite3.OPEN_READWRITE, (err) => {
     }
 });
 
-/*
-app.get('/:mfr', (req, res) => {
-    fs.readFile(path.join(__dirname, 'cereal_template.html'), 'utf-8', (err, data) => {
-        if(err) {
-            res.status(404).send('Error: File not Found');
-        } else {
-            let response = data.replace("{{{MANUFACTURER HERE}}}", req.params.mfr);
-            db.all('SELECT name from Cereals WHERE mfr = ?', [req.params.mfr.toUpperCase()[0]], (err, rows) => {
-                let i;
-                let list_items = '';
-                for(i = 0; i < rows.length; i++) {
-                    list_items += '<li>' + rows[i].name + '</li>\n';
-                }
-                response = response.replace('{{{CEREAL LIST HERE}}}', list_items);
-                res.status(200).type('html').send(response);
-            });
-        }
-    });
-});
-*/
-
-//REST API
-
-/*
-app.get('/api/cereal/:mfr', (req, res) => {
-    db.get('SELECT * FROM Manufacturers WHERE UPPER(name) = ?', [req.params.mfr.toUpperCase()], (err, row) => {
-        console.log(row);
-        db.all('SELECT * from Cereals WHERE mfr = ?', [row.id], (err, rows) => {
-            console.log(rows);
-            res.status(200).type('json').send(rows);
-        });
-    });
-});
-*/
 
 app.get('/api/codes', (req, res) => {
     
@@ -226,7 +192,7 @@ app.get('/api/incidents', (req, res) => {
 
 app.put('/api/new-incident', (req,res) => {
     console.log(req.body);
-    db.all('SELECT * FROM Incidents WHERE case_number', [req.body.case_number], (err,rows) => {
+    db.all('SELECT * FROM Incidents WHERE case_number = ?', [req.body.case_number], (err,rows) => {
         console.log(rows);
         console.log(err);
         if(err || rows !== undefined) {
@@ -265,21 +231,7 @@ app.delete('/api/remove-incident', (req, res) => {
     
 });
 
-/*
-app.post('/api/mfr', (req, res) => {
-    db.get('SELECT * FROM Manufacturers WHERE id=?', [req.body.id], (err, row) => {
-        if (err || row !== undefined) {
-            res.status(500).type('txt').send('Error, could not insert manufacturer');
-        } else {
-            //db.run('INSERT INTO Manufacturers (id, name) VALUES (?, ?)', [req.body.id, req.body.n],)
-        }
-    });
-});
 
-app.post('/api/cereal', (req, res) => {
-    
-});
-*/
 app.listen(port, () => {
     console.log('Now listening on port ' + port);
 });
