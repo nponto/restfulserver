@@ -136,6 +136,7 @@ app.get('/api/incidents', (req, res) => {
         let neighborhoods = req.query.neighborhood;
         let police_grids = req.query.grid;
         let limit = req.query.limit;
+        let base_date = "'2014-08-04'";
 
         let search = url.parse(req.url, true).search;
         search = search.replace('?', '');
@@ -149,6 +150,7 @@ app.get('/api/incidents', (req, res) => {
         } else if ((search.includes('start_date')) && (search.includes('end_date'))) {
             sql += '(date_time BETWEEN ' + "'" + start + "'" + ' AND ' + "'" + end + "')";
         } else {
+            sql += 'date_time >= ' + base_date;
             // edit sql so that is it flows correctly into the next query term
         }
 
@@ -196,11 +198,15 @@ app.get('/api/incidents', (req, res) => {
             sql += extraSQL(ids) + ')';
         }
 
+        sql += ' ORDER BY date_time ';
+
         if (search.includes('limit')) {
-            sql += ' LIMIT ' + limit;
+            sql += 'LIMIT ' + limit;
         } else {
-            sql += ' LIMIT 100';
+            sql += 'LIMIT 1000';
         }
+
+        
 
         console.log(sql);
 
